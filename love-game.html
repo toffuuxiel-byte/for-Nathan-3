@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>💕 Date ano Tara? 💕</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Trebuchet MS", "Comic Sans MS", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffd6e7, #fff0f6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Floating hearts */
+.heart {
+    position: fixed;
+    bottom: -40px;
+    font-size: 25px;
+    animation: floatUp linear forwards;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.game {
+    width: 92%;
+    max-width: 520px;
+    min-height: 580px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 35px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(255, 100, 150, 0.25);
+    position: relative;
+    z-index: 2;
+}
+
+/* Top bar */
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #ff5c8a;
+    font-weight: bold;
+}
+
+.hearts {
+    letter-spacing: 3px;
+}
+
+/* 🎵 MUSIC BUTTON */
+.music-btn {
+    background: #fff0f6;
+    color: #ff4f88;
+    border: 2px solid #ffb9d0;
+    padding: 9px 16px;
+    border-radius: 22px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.25s;
+    margin-bottom: 15px;
+}
+
+.music-btn:hover {
+    background: #ffb9d0;
+    color: white;
+    transform: scale(1.05);
+}
+
+.character {
+    width: 130px;
+    height: 130px;
+    margin: 10px auto 20px;
+    border-radius: 50%;
+    background: #ffe0ec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    box-shadow: 0 10px 25px rgba(255, 100, 150, 0.15);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+h1 {
+    color: #ff4f88;
+    font-size: 29px;
+    margin-bottom: 10px;
+}
+
+.dialogue {
+    color: #666;
+    font-size: 18px;
+    line-height: 1.5;
+    min-height: 85px;
+    margin: 10px 0 20px;
+}
+
+.choices {
+    display: grid;
+    gap: 12px;
+}
+
+button {
+    border: none;
+    padding: 14px 18px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.choice {
+    background: #ffe5ef;
+    color: #ff4f88;
+}
+
+.choice:hover {
+    background: #ffb9d0;
+    color: white;
+    transform: scale(1.03);
+}
+
+.progress {
+    height: 10px;
+    background: #ffe4ee;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #ff6f9c;
+    transition: 0.5s;
+}
+
+.message {
+    margin-top: 18px;
+    color: #ff4f88;
+    font-weight: bold;
+    min-height: 25px;
+}
+
+.restart {
+    background: #ff6f9c;
+    color: white;
+    margin-top: 20px;
+    padding: 14px 30px;
+}
+
+.restart:hover {
+    transform: scale(1.08);
+    background: #ff4f88;
+}
+
+.ending {
+    display: none;
+}
+
+.big-heart {
+    font-size: 90px;
+    animation: heartbeat 1s infinite;
+    margin: 15px;
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+.love-meter {
+    margin: 15px 0;
+    color: #ff4f88;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- GAME SCREEN -->
+    <div id="gameScreen">
+
+        <div class="top">
+            <span id="level">Level 1 💕</span>
+            <span class="hearts" id="heartScore">
+                ❤️❤️❤️❤️❤️
+            </span>
+        </div>
+
+        <!-- 🎵 MUSIC BUTTON -->
+        <button class="music-btn" onclick="toggleMusic()">
+            🎵 <span id="musicText">Play Music</span>
+        </button>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="character" id="character">
+            🥰
+        </div>
+
+        <h1 id="title">
+            A Little Love Story 💕
+        </h1>
+
+        <div class="dialogue" id="dialogue">
+            Hi... 👉👈 I wanted to ask you something.
+            <br><br>
+            If I would ask you out on a date, would you say yes? 🥺
+        </div>
+
+        <div class="choices" id="choices"></div>
+
+        <div class="message" id="message"></div>
+
+    </div>
+
+
+    <!-- ENDING SCREEN -->
+    <div class="ending" id="ending">
+
+        <div class="big-heart">💖</div>
+
+        <h1>Our Story Ends Here... 💕</h1>
+
+        <p class="dialogue" id="endingText"></p>
+
+        <div class="love-meter" id="finalScore"></div>
+
+        <button class="restart" onclick="restartGame()">
+            ULIT BA? PARA KILIGIN KA HEHE 🔄
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   🎵🎵🎵 YOUR MUSIC IS HERE 🎵🎵🎵
+
+   Put your song in the SAME FOLDER as this HTML file.
+
+   Rename your song:
+
+       music.mp3
+
+   Your folder should look like:
+
+       📁 Love Game
+       ├── index.html
+       └── music.mp3
+
+   If your song has another name, change "music.mp3"
+   below to your actual filename.
+
+   Example:
+       const backgroundMusic = new Audio("my-song.mp3");
+========================================================= */
+
+const backgroundMusic = new Audio("music.mp3");
+
+backgroundMusic.loop = true;
+
+// Volume: 0.0 = silent
+//         1.0 = maximum
+backgroundMusic.volume = 0.45;
+
+let musicPlaying = false;
+
+
+/* 🎵 PLAY / PAUSE MUSIC */
+
+async function toggleMusic() {
+
+    const musicText = document.getElementById("musicText");
+
+    try {
+
+        if (musicPlaying) {
+
+            backgroundMusic.pause();
+
+            musicPlaying = false;
+
+            musicText.textContent = "Play Music";
+
+        } else {
+
+            await backgroundMusic.play();
+
+            musicPlaying = true;
+
+            musicText.textContent = "Pause Music";
+        }
+
+    } catch (error) {
+
+        alert(
+            "Music not found! 💕\n\n" +
+            "Make sure your song is named:\n" +
+            "music.mp3\n\n" +
+            "And put it in the same folder as this HTML file."
+        );
+
+    }
+}
+
+
+/* =========================================================
+   💕 GAME QUESTIONS
+========================================================= */
+
+const levels = [
+
+    {
+        title: "A Little Adventure 💕",
+
+        character: "🥰",
+
+        dialogue:
+            "Hi... 👉👈 I wanted to ask you something. If I would ask you out on a date, would you say yes?",
+
+        choices: [
+
+            {
+                text: "Malamang Ikaw na yan IHHHH🌸",
+                points: 2,
+                reaction: "Yay! I was hoping you'd say that! 🥰"
+            },
+
+            {
+                text: "Maybe... 👀",
+                points: 1,
+                reaction: "Hehe... I'll take that as a maybe! 💕"
+            },
+
+            {
+                text: "Ayuko wala akong piraaa! 🥺",
+                points: 0,
+                reaction: "OWKIII mag iipon nalang ako next time :<s 🥺"
+            }
+
+        ]
+    },
+
+
+    {
+        title: "The First Date 🌷",
+
+        character: "🌷",
+
+        dialogue:
+            "We're finally here! Where should we go for our first date?",
+
+        choices: [
+
+            {
+                text: "Coffee? ☕",
+                points: 2,
+                reaction: "Coffee and you? Perfect combination. ☕💕"
+            },
+
+            {
+                text: "National Museum? 🌳",
+                points: 2,
+                reaction: "That sounds peaceful... especially with you. 🌸"
+            },
+
+            {
+                text: "or AKO??????🥺",
+                points: 3,
+                reaction: "STOPPP! You're making me blush! 😳💕"
+            }
+
+        ]
+    },
+
+
+    {
+        title: "Getting Closer 💓",
+
+        character: "☺️",
+
+        dialogue:
+            "We've been spending so much time together. What's your favorite thing about me?",
+
+        choices: [
+
+            {
+                text: "Ngiti ko? 😊",
+                points: 2,
+                reaction: "My smile? It's probably because of you. 💕"
+            },
+
+            {
+                text: "Me?? 🌸",
+                points: 2,
+                reaction: "Aww... that's really sweet, I LOVE YOUUU!!. 🥺"
+            },
+
+            {
+                text: "Mata ko? 💖",
+                points: 3,
+                reaction: "SAYONG LANG ANG TINGIN Q 💗"
+            }
+
+        ]
+    },
+
+
+    {
+        title: "The Important Question 💌",
+
+        character: "🥺",
+
+        dialogue:
+            "I have one last question... Would you stay by my side for a very, very long time?",
+
+        choices: [
+
+            {
+                text: "Of course! 💕",
+                points: 3,
+                reaction: "You just made my heart so happy! 🥰"
+            },
+
+            {
+                text: "I'll try my best. 🌷",
+                points: 2,
+                reaction: "That's all I could ever ask for. 💗"
+            },
+
+            {
+                text: "I don't know... 🥺",
+                points: 0,
+                reaction: "That's okay. I'll treasure the time we have. 🌸"
+            }
+
+        ]
+    },
+
+
+    {
+        title: "One Last Thing 💖",
+
+        character: "😍",
+
+        dialogue:
+            "After everything we've been through... there's something I really want to say.",
+
+        choices: [
+
+            {
+                text: "What is it? 👀",
+                points: 3,
+                reaction: "I think... I really, really GUSTO U! 💕"
+            },
+
+            {
+                text: "Tell me! 🥺",
+                points: 3,
+                reaction: "You're special to me. More than you know. 💗"
+            },
+
+            {
+                text: "I'm listening. 🌷",
+                points: 3,
+                reaction: "Then listen carefully... I LOVE YOU, MAHAL NA MAHAL KITAA NATHAN :> . 💖"
+            }
+
+        ]
+    }
+
+];
+
+
+/* =========================================================
+   🎮 GAME VARIABLES
+========================================================= */
+
+let currentLevel = 0;
+let score = 0;
+
+const levelElement =
+    document.getElementById("level");
+
+const heartScore =
+    document.getElementById("heartScore");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const character =
+    document.getElementById("character");
+
+const title =
+    document.getElementById("title");
+
+const dialogue =
+    document.getElementById("dialogue");
+
+const choices =
+    document.getElementById("choices");
+
+const message =
+    document.getElementById("message");
+
+
+/* =========================================================
+   📖 LOAD LEVEL
+========================================================= */
+
+function loadLevel() {
+
+    const level = levels[currentLevel];
+
+    levelElement.textContent =
+        `Level ${currentLevel + 1} 💕`;
+
+    character.textContent =
+        level.character;
+
+    title.textContent =
+        level.title;
+
+    dialogue.textContent =
+        level.dialogue;
+
+    message.textContent = "";
+
+    choices.innerHTML = "";
+
+    progressBar.style.width =
+        ((currentLevel) / levels.length) * 100 + "%";
+
+
+    level.choices.forEach(choice => {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "choice";
+
+        button.textContent =
+            choice.text;
+
+        button.onclick =
+            () => choose(choice);
+
+        choices.appendChild(button);
+
+    });
+
+    updateHearts();
+}
+
+
+/* =========================================================
+   💗 CHOOSE ANSWER
+========================================================= */
+
+function choose(choice) {
+
+    score += choice.points;
+
+    message.textContent =
+        choice.reaction;
+
+    character.textContent =
+        "💗";
+
+    createHeartExplosion();
+
+
+    setTimeout(() => {
+
+        currentLevel++;
+
+        if (currentLevel < levels.length) {
+
+            loadLevel();
+
+        } else {
+
+            showEnding();
+
+        }
+
+    }, 1200);
+
+}
+
+
+/* =========================================================
+   ❤️ UPDATE HEARTS
+========================================================= */
+
+function updateHearts() {
+
+    let hearts = "";
+
+    let totalHearts = Math.min(
+        5,
+        Math.floor(score / 2) + 1
+    );
+
+    for (let i = 0; i < 5; i++) {
+
+        if (i < totalHearts) {
+
+            hearts += "❤️";
+
+        } else {
+
+            hearts += "🖤";
+
+        }
+
+    }
+
+    heartScore.textContent =
+        hearts;
+}
+
+
+/* =========================================================
+   💖 ENDING
+========================================================= */
+
+function showEnding() {
+
+    document.getElementById("gameScreen")
+        .style.display = "none";
+
+    document.getElementById("ending")
+        .style.display = "block";
+
+    progressBar.style.width =
+        "100%";
+
+
+    const endingText =
+        document.getElementById("endingText");
+
+    const finalScore =
+        document.getElementById("finalScore");
+
+
+    if (score >= 13) {
+
+        endingText.innerHTML =
+            "💖 <strong>TRUE LOVE!</strong> 💖<br><br>" +
+            "You made every choice with your heart. " +
+            "Maybe this little game wasn't just a game after all... 🥺💕";
+
+        finalScore.textContent =
+            "Love Level: 💗💗💗💗💗";
+
+    }
+
+    else if (score >= 8) {
+
+        endingText.innerHTML =
+            "💕 <strong>A SWEET LOVE STORY!</strong> 💕<br><br>" +
+            "You two definitely have something special. 🌷";
+
+        finalScore.textContent =
+            "Love Level: 💗💗💗💗";
+
+    }
+
+    else {
+
+        endingText.innerHTML =
+            "🌸 <strong>A NEW BEGINNING</strong> 🌸<br><br>" +
+            "Sometimes love takes a little time. " +
+            "Maybe your story is only beginning... 💕";
+
+        finalScore.textContent =
+            "Love Level: 💗💗💗";
+
+    }
+
+    createHeartExplosion();
+}
+
+
+/* =========================================================
+   🔄 RESTART GAME
+========================================================= */
+
+function restartGame() {
+
+    currentLevel = 0;
+
+    score = 0;
+
+    document.getElementById("gameScreen")
+        .style.display = "block";
+
+    document.getElementById("ending")
+        .style.display = "none";
+
+    loadLevel();
+}
+
+
+/* =========================================================
+   💕 FLOATING HEARTS
+========================================================= */
+
+function createHeart() {
+
+    const heart =
+        document.createElement("div");
+
+    heart.className =
+        "heart";
+
+
+    const heartTypes = [
+
+        "💗",
+        "💕",
+        "💖",
+        "💓",
+        "💘",
+        "💝"
+
+    ];
+
+
+    heart.textContent =
+        heartTypes[
+            Math.floor(
+                Math.random() *
+                heartTypes.length
+            )
+        ];
+
+
+    heart.style.left =
+        Math.random() * 100 + "vw";
+
+
+    heart.style.animationDuration =
+        (Math.random() * 4 + 4) + "s";
+
+
+    heart.style.fontSize =
+        (Math.random() * 20 + 15) + "px";
+
+
+    document.body.appendChild(heart);
+
+
+    setTimeout(() => {
+
+        heart.remove();
+
+    }, 8000);
+
+}
+
+
+/* =========================================================
+   💥 HEART EXPLOSION
+========================================================= */
+
+function createHeartExplosion() {
+
+    for (let i = 0; i < 15; i++) {
+
+        setTimeout(() => {
+
+            createHeart();
+
+        }, i * 70);
+
+    }
+
+}
+
+
+/* Create floating hearts */
+setInterval(createHeart, 700);
+
+
+/* =========================================================
+   🚀 START GAME
+========================================================= */
+
+loadLevel();
+
+</script>
+
+</body>
+</html>
